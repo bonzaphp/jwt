@@ -1,5 +1,7 @@
 .idea
 .idea/*
-.vendor
-.vendor/*
-.composer.lock
+vendor
+vendor/*
+composer.lock
+/vendor/
+vendor/*
