@@ -5,6 +5,7 @@
  * Date: 2019/4/29
  * Time: 10:06
  */
+namespace bonza\jwt;
 
 
 abstract class JWTBase implements JWT

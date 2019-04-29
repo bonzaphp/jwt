@@ -5,6 +5,7 @@
  * Date: 2019/4/29
  * Time: 11:51
  */
+namespace bonza\jwt;
 
 
 $header = [

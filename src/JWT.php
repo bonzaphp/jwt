@@ -5,6 +5,7 @@
  * Date: 2019/4/29
  * Time: 9:06
  */
+namespace bonza\jwt;
 
 interface JWT
 {

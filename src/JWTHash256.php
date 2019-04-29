@@ -5,6 +5,9 @@
  * @author bonzaphp@gmail.com
  * @date 20190427
  */
+
+namespace bonza\jwt;
+
 class JWTHash256 extends JWTBase
 {
 
