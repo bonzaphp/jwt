@@ -10,10 +10,12 @@ interface JWT
 {
     /**
      * 编码jwt_token
+     * @param array $header
+     * @param array $payload
      * @param string $key //签名密钥
      * @return string
      */
-    public function encode(string $key): string;
+    static public function encode(array $header,array $payload,string $key): string;
 
     /**
      * 解码jwt_token
@@ -21,5 +23,5 @@ interface JWT
      * @param string $key //签名密钥
      * @return object
      */
-    public function decode(string $jwt_token, string $key): object;
+    static public function decode(string $jwt_token, string $key): object;
 }

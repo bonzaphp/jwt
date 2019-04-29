@@ -29,12 +29,20 @@ require './src/JWTBase.php';
 
 require './src/JWTHash256.php';
 
-$jwt = new JWTHash256([],$payload);
+/*$jwt = new JWTHash256([],$payload);
 $key = 'jwt-key';
 
 $token = $jwt->encode($key);
 try {
     echo json_encode($jwt->decode($token, $key));
+} catch (\Exception $e) {
+    echo $e->getMessage();
+}*/
+$key = 'jwt-key';
+
+$token = JWTHash256::encode($header,$payload,$key);
+try {
+    echo json_encode(JWTHash256::decode($token, $key));
 } catch (\Exception $e) {
     echo $e->getMessage();
 }

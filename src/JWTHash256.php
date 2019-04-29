@@ -9,52 +9,55 @@ class JWTHash256 extends JWTBase
 {
 
     //头部json对象
-    private $header = [
+    private static $header = [
         'alg' => 'sha256',//算法
         'typ' => 'JWT',
     ];
     //标准格式
-    private $payload = [];
+    private static $payload = [];
 
-    function __construct(array $header,array $payload)
+    private function __construct()
     {
-        $this->header = !empty($header)?$header:$this->header;
-        $this->payload = $payload;
+        //禁止实例化
     }
 
     /**
      * 算出签名以后，把 Header、Payload、Signature 三个部分拼成一个字符串，每个部分之间用"点"（.）分隔，就可以返回给用户
+     * @param array $header
+     * @param array $payload
      * @param $key
      * @return string
      */
-    public function encode($key):string
+    public static function encode(array $header, array $payload, $key): string
     {
-        return $this->getHeader().'.'.$this->getPayload().'.'.$this->sign($this->getHeader().$this->getPayload(),$key);
+        self::$header = !empty($header) ? $header : static::$header;
+        static::$payload = $payload;
+        return static::getHeader() . '.' . static::getPayload() . '.' . static::sign(static::getHeader() . static::getPayload(), $key);
     }
 
     /**
      * @return string
      */
-    public function getPayload():string
+    static public function getPayload(): string
     {
-        return static::base64url_encode(json_encode($this->payload));
+        return static::base64url_encode(json_encode(static::$payload));
     }
 
     /**
      * 设置负载
      * @param array $payload
      */
-    public function setPayload(array $payload)
+    static public function setPayload(array $payload)
     {
-        $this->payload = $payload;
+        static::$payload = $payload;
     }
 
     /**
      * @return string
      */
-    public function getHeader():string
+    static public function getHeader(): string
     {
-        return static::base64url_encode(json_encode($this->header));
+        return static::base64url_encode(json_encode(static::$header));
     }
 
 
@@ -65,7 +68,7 @@ class JWTHash256 extends JWTBase
      * @return object
      * @throws Exception
      */
-    public function decode(string $jwt_token, string $key): object
+    static public function decode(string $jwt_token, string $key): object
     {
         $tks = explode('.', $jwt_token);
         if (count($tks) != 3) {
@@ -84,12 +87,10 @@ class JWTHash256 extends JWTBase
         if (empty($header->alg)) {
             throw new UnexpectedValueException('没有指定加密方式');
         }
-
         // Check the signature
-        if (!$this->verify($headb64.$bodyb64,$key,$sign)) {
+        if (!static::verify($headb64 . $bodyb64, $key, $sign)) {
             throw new \Exception('签名校验失败');
         }
-
         return $payload;
     }
 
@@ -99,9 +100,9 @@ class JWTHash256 extends JWTBase
      * @param string $key
      * @return string
      */
-    protected function sign(string $msg,string $key): string
+    static private function sign(string $msg, string $key): string
     {
-        return static::base64url_encode(hash_hmac('sha256',$msg,$key,true));
+        return static::base64url_encode(hash_hmac('sha256', $msg, $key, true));
     }
 
     /**
@@ -111,23 +112,20 @@ class JWTHash256 extends JWTBase
      * @param string $signature
      * @return bool
      */
-    protected function verify(string $msg,string $key,string  $signature): bool
+    static private function verify(string $msg, string $key, string $signature): bool
     {
         $hash = hash_hmac('sha256', $msg, $key, true);
         if (function_exists('hash_equals')) {
             return hash_equals($signature, $hash);
         }
         $len = min(static::safeStrlen($signature), static::safeStrlen($hash));
-
         $status = 0;
         for ($i = 0; $i < $len; $i++) {
             $status |= (ord($signature[$i]) ^ ord($hash[$i]));
         }
         $status |= (static::safeStrlen($signature) ^ static::safeStrlen($hash));
-
         return ($status === 0);
     }
-
 
 
 }
