@@ -8,6 +8,7 @@
 
 namespace bonza\jwt;
 
+
 class JWTHash256 extends JWTBase
 {
 
@@ -68,27 +69,27 @@ class JWTHash256 extends JWTBase
      * 解码jwt
      * @param string $jwt_token
      * @param string $key
-     * @return object
-     * @throws Exception
+     * @return object|\stdClass
+     * @throws \Exception
      */
     static public function decode(string $jwt_token, string $key): object
     {
         $tks = explode('.', $jwt_token);
         if (count($tks) != 3) {
-            throw new UnexpectedValueException('非法token');
+            throw new \UnexpectedValueException('非法token');
         }
         list($headb64, $bodyb64, $cryptob64) = $tks;
         if (null === ($header = static::jsonDecode(static::base64url_decode($headb64)))) {
-            throw new UnexpectedValueException('无效头信息');
+            throw new \UnexpectedValueException('无效头信息');
         }
         if (null === $payload = static::jsonDecode(static::base64url_decode($bodyb64))) {
-            throw new UnexpectedValueException('无效负载');
+            throw new \UnexpectedValueException('无效负载');
         }
         if (false === ($sign = static::base64url_decode($cryptob64))) {
-            throw new UnexpectedValueException('无效签名');
+            throw new \UnexpectedValueException('无效签名');
         }
         if (empty($header->alg)) {
-            throw new UnexpectedValueException('没有指定加密方式');
+            throw new \UnexpectedValueException('没有指定加密方式');
         }
         // Check the signature
         if (!static::verify($headb64 . $bodyb64, $key, $sign)) {

@@ -59,7 +59,7 @@ abstract class JWTBase implements JWT
         if (function_exists('json_last_error') && $errMsg = json_last_error()) {
             static::handleJsonError($errMsg);
         } elseif ($json === 'null' && $input !== null) {
-            throw new DomainException('编码错误');
+            throw new \DomainException('编码错误');
         }
         return $json;
     }
@@ -78,7 +78,7 @@ abstract class JWTBase implements JWT
             JSON_ERROR_UTF8 => 'Malformed UTF-8 characters, possibly incorrectly encoded', //PHP >= 5.3.3
             JSON_ERROR_NONE => 'Unknown error',
         ];
-        throw new DomainException(
+        throw new \DomainException(
             isset($messages[$errMsg])
                 ? $messages[$errMsg]
                 : 'Unknown JSON error: ' . $errMsg
@@ -103,7 +103,7 @@ abstract class JWTBase implements JWT
         if (function_exists('json_last_error') && $errMsg = json_last_error()) {
             static::handleJsonError($errMsg);
         } elseif ($obj === null && $input !== 'null') {
-            throw new DomainException('Null result with non-null input');
+            throw new \DomainException('Null result with non-null input');
         }
         return $obj;
     }
