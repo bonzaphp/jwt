@@ -38,6 +38,8 @@ try {
 } catch (\Exception $e) {
     echo $e->getMessage();
 }*/
+
+//静态调用示例
 $key = 'jwt-key';
 
 $token = JWTHash256::encode($header,$payload,$key);
