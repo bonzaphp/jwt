@@ -5,6 +5,7 @@
  * Date: 2019/4/29
  * Time: 11:51
  */
+namespace bonza\jwt;
 
 
 $header = [
@@ -29,12 +30,22 @@ require './src/JWTBase.php';
 
 require './src/JWTHash256.php';
 
-$jwt = new JWTHash256([],$payload);
+/*$jwt = new JWTHash256([],$payload);
 $key = 'jwt-key';
 
 $token = $jwt->encode($key);
 try {
     echo json_encode($jwt->decode($token, $key));
+} catch (\Exception $e) {
+    echo $e->getMessage();
+}*/
+
+//静态调用示例
+$key = 'jwt-key';
+
+$token = JWTHash256::encode($header,$payload,$key);
+try {
+    echo json_encode(JWTHash256::decode($token, $key));
 } catch (\Exception $e) {
     echo $e->getMessage();
 }

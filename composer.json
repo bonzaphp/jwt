@@ -1,4 +1,3 @@
-    
 {
     "name": "bonza/jwt",
     "description": "支持PHP7.2语法，易扩展的jwt-token类库",

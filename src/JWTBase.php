@@ -5,6 +5,7 @@
  * Date: 2019/4/29
  * Time: 10:06
  */
+namespace bonza\jwt;
 
 
 abstract class JWTBase implements JWT
@@ -12,10 +13,12 @@ abstract class JWTBase implements JWT
 
     /**
      * 编码jwt_token
+     * @param array $header
+     * @param array $payload
      * @param string $key //签名密钥
      * @return string
      */
-    abstract public function encode(string $key): string;
+    abstract static public function encode(array $header,array $payload,string $key): string;
 
     /**
      * 解码jwt_token
@@ -23,7 +26,7 @@ abstract class JWTBase implements JWT
      * @param string $key //签名密钥
      * @return object
      */
-    abstract public function decode(string $jwt_token, string $key): object ;
+    abstract static public function decode(string $jwt_token, string $key): object ;
 
     /**
      * base64 url编码
