@@ -1,6 +1,6 @@
 {
     "name": "bonza/jwt",
-    "description": "支持PHP7.2语法，易扩展的jwt-token类库",
+    "description": "支持PHP7.0语法，易扩展的jwt-token类库",
     "type": "library",
     "license": "MIT",
     "authors": [

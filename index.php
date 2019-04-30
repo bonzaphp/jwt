@@ -13,13 +13,13 @@ $header = [
     'typ' => 'JWT',
 ];
 $payload = [
-    "iss" => "https://crm.ngrok.bonza.cn",//issuer 签发人
-    "aud" => "https://crm.ngrok.bonza.cn",//audience 受众
+    "iss" => "https://example.cn",//issuer 签发人
+    "aud" => "https://example.cn",//audience 受众
     "iat" => time(),//Issued At 签发时间
     "sub" => 'self sign',//subject 主题
     "nbf" => time(),//Not Before 生效时间
     "exp" => time()+3600,//过期时间
-    "jti" => 'crm'.date('YmdHis').random_int(1000,9999),//JWT ID
+    "jti" => 'exp'.date('YmdHis').random_int(1000,9999),//JWT ID
 ];
 
 
