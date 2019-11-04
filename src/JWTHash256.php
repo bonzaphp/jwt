@@ -9,6 +9,9 @@
 namespace bonza\jwt;
 
 
+use Exception;
+use UnexpectedValueException;
+
 class JWTHash256 extends JWTBase
 {
 
@@ -42,7 +45,7 @@ class JWTHash256 extends JWTBase
     /**
      * @return string
      */
-    static public function getPayload(): string
+    public static function getPayload(): string
     {
         return static::base64url_encode(json_encode(static::$payload));
     }
@@ -51,7 +54,7 @@ class JWTHash256 extends JWTBase
      * 设置负载
      * @param array $payload
      */
-    static public function setPayload(array $payload)
+    public static function setPayload(array $payload): void
     {
         static::$payload = $payload;
     }
@@ -59,7 +62,7 @@ class JWTHash256 extends JWTBase
     /**
      * @return string
      */
-    static public function getHeader(): string
+    public static function getHeader(): string
     {
         return static::base64url_encode(json_encode(static::$header));
     }
@@ -70,30 +73,30 @@ class JWTHash256 extends JWTBase
      * @param string $jwt_token
      * @param string $key
      * @return object|\stdClass
-     * @throws \Exception
+     * @throws Exception
      */
-    static public function decode(string $jwt_token, string $key): object
+    public static function decode(string $jwt_token, string $key): object
     {
         $tks = explode('.', $jwt_token);
-        if (count($tks) != 3) {
-            throw new \UnexpectedValueException('非法token');
+        if (count($tks) !== 3) {
+            throw new UnexpectedValueException('非法token');
         }
-        list($headb64, $bodyb64, $cryptob64) = $tks;
+        [$headb64, $bodyb64, $cryptob64] = $tks;
         if (null === ($header = static::jsonDecode(static::base64url_decode($headb64)))) {
-            throw new \UnexpectedValueException('无效头信息');
+            throw new UnexpectedValueException('无效头信息');
         }
         if (null === $payload = static::jsonDecode(static::base64url_decode($bodyb64))) {
-            throw new \UnexpectedValueException('无效负载');
+            throw new UnexpectedValueException('无效负载');
         }
         if (false === ($sign = static::base64url_decode($cryptob64))) {
-            throw new \UnexpectedValueException('无效签名');
+            throw new UnexpectedValueException('无效签名');
         }
         if (empty($header->alg)) {
-            throw new \UnexpectedValueException('没有指定加密方式');
+            throw new UnexpectedValueException('没有指定加密方式');
         }
         // Check the signature
         if (!static::verify($headb64 . $bodyb64, $key, $sign)) {
-            throw new \Exception('签名校验失败');
+            throw new Exception('签名校验失败');
         }
         return $payload;
     }
@@ -104,7 +107,7 @@ class JWTHash256 extends JWTBase
      * @param string $key
      * @return string
      */
-    static private function sign(string $msg, string $key): string
+    private static function sign(string $msg, string $key): string
     {
         return static::base64url_encode(hash_hmac('sha256', $msg, $key, true));
     }
@@ -116,7 +119,7 @@ class JWTHash256 extends JWTBase
      * @param string $signature
      * @return bool
      */
-    static private function verify(string $msg, string $key, string $signature): bool
+    private static function verify(string $msg, string $key, string $signature): bool
     {
         $hash = hash_hmac('sha256', $msg, $key, true);
         if (function_exists('hash_equals')) {
